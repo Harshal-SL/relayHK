@@ -21,19 +21,30 @@
   100% { background-position: 100% 100%; }
 }
 
+@keyframes screen-shake {
+  0%, 100% { transform: translate(0, 0); }
+  10%, 30%, 50%, 70%, 90% { transform: translate(-0.5px, -0.5px); }
+  20%, 40%, 60%, 80% { transform: translate(0.5px, 0.5px); }
+}
+
+@keyframes static-rain {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
 :root{
-  --bg: #111111;
-  --surface: #202020;
-  --muted: #808080;
-  --text: #ffffff;
-  --accent: #ff0000;
-  --accent-dark: #8b0000;
-  --border: rgba(255,0,0,0.15);
-  --radius: 12px;
-  --card-shadow: 0 8px 30px rgba(0,0,0,0.6);
-  --glass: rgba(255,0,0,0.1);
+  --bg: #000000;
+  --surface: #121212;
+  --muted: #4a4a4a;
+  --text: #c0c0c0;
+  --accent: #b70000;
+  --accent-dark: #6e0000;
+  --border: rgba(183,0,0,0.25);
+  --radius: 8px;
+  --card-shadow: 0 8px 30px rgba(0,0,0,0.8);
+  --glass: rgba(183,0,0,0.1);
   --max-width: 920px;
-  --gap-horizontal: 10px;
+  --glitch-color: #ff0000;
 }
 
 * { box-sizing: border-box; }
@@ -42,16 +53,34 @@ body {
   margin: 0;
   padding: 0;
   background: var(--bg);
-  background-image: radial-gradient(circle at top left, var(--surface) 0%, transparent 50%),
-                    radial-gradient(circle at bottom right, #0a0a0a 0%, transparent 50%);
-  background-size: 200% 200%;
-  animation: subtle-move 45s infinite alternate;
   color: var(--text);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'Times New Roman', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
   -webkit-font-feature-settings: "liga" 1;
+  animation: screen-shake 25s infinite ease-in-out;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.01),
+    rgba(255,255,255,0.01) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  animation: static-rain 60s linear infinite;
+  opacity: 0.1;
+  z-index: 9999;
 }
 
 .container {
@@ -65,13 +94,13 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 18px 24px;
-  background: rgba(17,17,17,0.85);
+  background: rgba(0,0,0,0.9);
   border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(4px);
   position: sticky;
   top: 0;
   z-index: 20;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
   animation: flicker 4s infinite step-end;
 }
 .logo {
@@ -94,19 +123,33 @@ nav a {
   text-decoration: none;
   color: var(--muted);
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: 6px;
   font-weight: 600;
   transition: all 160ms ease;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Courier New', monospace;
+  position: relative;
+}
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+nav a:hover::after {
+  transform: scaleX(1);
 }
 nav a.active,
 nav a:hover,
 nav a:focus {
-  color: var(--text);
-  background: var(--glass);
+  color: var(--accent);
+  background: rgba(183,0,0,0.05);
   transform: translateY(-1px);
   outline: none;
-  animation: bloody-glow 2s infinite ease-in-out;
 }
 
 main {
@@ -123,13 +166,14 @@ main {
   border: 1px solid var(--border);
   box-shadow: var(--card-shadow);
   cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease;
+  transition: transform 180ms ease, box-shadow 180ms ease;
   overflow: hidden;
   position: relative;
+  z-index: 10;
 }
 .post:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.9);
 }
 .post::before {
   content: '';
@@ -138,18 +182,20 @@ main {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(255,0,0,0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at center, var(--accent) 0%, transparent 60%);
   opacity: 0;
   transition: opacity 300ms ease;
+  pointer-events: none;
 }
 .post:hover::before {
-  opacity: 1;
+  opacity: 0.15;
   animation: bloody-glow 2s infinite ease-in-out;
 }
 .post h2 {
   margin: 0 0 6px 0;
   font-size: 1.2rem;
   font-weight: 700;
+  color: var(--text);
 }
 .subtitle {
   margin: 0;
@@ -171,9 +217,10 @@ main {
   font-weight: 700;
   cursor: pointer;
   border-radius: 8px;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Courier New', monospace;
+  transition: all 160ms ease;
 }
-#backBtn:hover { color: var(--text); transform: translateY(-1px); }
+#backBtn:hover { color: var(--accent); transform: translateY(-1px); }
 
 footer {
   border-top: 1px solid var(--border);
@@ -186,11 +233,11 @@ footer {
 
 .form-container,
 .contact-form {
-  background: linear-gradient(180deg, rgba(17,17,17,0.98), rgba(17,17,17,0.96));
-  border-radius: 14px;
+  background: rgba(0,0,0,0.9);
+  border-radius: 10px;
   padding: 20px;
   border: 1px solid var(--border);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
   max-width: 760px;
   margin: 18px auto;
 }
@@ -204,10 +251,10 @@ footer {
 
 label {
   font-size: 0.88rem;
-  color: var(--muted);
+  color: var(--accent);
   font-weight: 700;
   letter-spacing: 0.2px;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Courier New', monospace;
 }
 
 input[type="text"],
@@ -215,15 +262,15 @@ input[type="email"],
 textarea {
   width: 100%;
   padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: transparent;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
   font-size: 1rem;
   color: var(--text);
   outline: none;
   transition: border-color 120ms ease, box-shadow 120ms ease, transform 60ms ease;
   resize: vertical;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: 'Times New Roman', serif;
 }
 input[type="text"]::placeholder,
 input[type="email"]::placeholder,
@@ -232,7 +279,7 @@ textarea::placeholder {
 }
 input:focus, textarea:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 15px rgba(255,0,0,0.3);
+  box-shadow: 0 0 15px rgba(183,0,0,0.3);
   transform: translateY(-2px);
 }
 
@@ -241,17 +288,19 @@ button {
   align-items: center;
   gap: 8px;
   background: var(--accent);
-  color: #000;
+  color: #fff;
   border: 0;
   padding: 10px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 0 15px rgba(255,0,0,0.2);
+  box-shadow: 0 0 15px rgba(183,0,0,0.2);
   transition: transform 120ms ease, opacity 120ms ease;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Courier New', monospace;
   position: relative;
   overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 button::after {
   content: "";
@@ -274,20 +323,20 @@ button:hover { transform: translateY(-3px); }
 #contactStatus {
   margin-top: 12px;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--accent);
 }
 
 .muted { color: var(--muted); }
 .article-content {
   background: var(--surface);
   padding: 18px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   border: 1px solid var(--border);
 }
 
 a:focus, button:focus, input:focus, textarea:focus {
-  outline: 3px solid rgba(255,0,0,0.5);
+  outline: 3px solid rgba(183,0,0,0.5);
   outline-offset: 3px;
 }
 
