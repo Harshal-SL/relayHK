@@ -1,18 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mediumish Blog</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <div class="logo">Mediumish</div>
     <nav>
       <ul>
-        <li><a id="homeLink">Home</a></li>
-        <li><a id="aboutLink">About</a></li>
+        <li><a id="homeLink" href="#">Home</a></li>
+        <li><a id="aboutLink" href="#">About</a></li>
+        <li><a id="contactLink" href="#">Contact</a></li>
       </ul>
     </nav>
   </header>
@@ -33,18 +35,47 @@
         <h2>Designing Without Color</h2>
         <p class="subtitle">The elegance of grayscale aesthetics.</p>
       </article>
+    </section>
 
     <footer>
       <p>© <span id="year"></span> Mediumish Blog</p>
     </footer>
-   </main>
+  </main>
 
-  <section id="aboutPage" class="page">
+  <section id="aboutPage" class="page hidden">
     <h1>About</h1>
     <p>This minimalist blog celebrates clean, distraction-free design.</p>
   </section>
 
-  <section id="articlePage" class="page">
+  <section id="contactPage" class="page hidden" aria-labelledby="contactTitle">
+    <h1 id="contactTitle">Contact</h1>
+    <p>If you have questions or feedback, send a message below.</p>
+
+    <form id="contactForm" action="#" method="post" novalidate>
+      <div class="form-row">
+        <label for="contactName">Name</label>
+        <input type="text" id="contactName" name="name" required placeholder="Your name" />
+      </div>
+
+      <div class="form-row">
+        <label for="contactEmail">Email</label>
+        <input type="email" id="contactEmail" name="email" required placeholder="you@example.com" />
+      </div>
+
+      <div class="form-row">
+        <label for="contactMessage">Message</label>
+        <textarea id="contactMessage" name="message" rows="6" required placeholder="Write your message..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <button type="submit">Send Message</button>
+      </div>
+
+      <p id="contactStatus" aria-live="polite" style="display:none;"></p>
+    </form>
+  </section>
+
+  <section id="articlePage" class="page hidden">
     <button id="backBtn">← Back to Home</button>
     <div id="articleContent"></div>
   </section>
